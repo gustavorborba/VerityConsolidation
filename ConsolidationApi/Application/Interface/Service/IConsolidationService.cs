@@ -1,9 +1,12 @@
-﻿namespace ConsolidationApi.Application.Interface.Service
+﻿using BalanceLedgerApi.Application.Dto;
+using ConsolidationApi.Application.Dto;
+
+namespace ConsolidationApi.Application.Interface.Service
 {
     public interface IConsolidationService
     {
         Task ConsolidationProcess(DateTime startDate, DateTime endDate);
-        Task<IEnumerable<Consolidation>> GetAll();
+        Task<CommonResponseDto<IEnumerable<ConsolidationDto>>> GetAll();
         Task<byte[]> GenerateExcelReport(int consolidationsNumber);
     }
 }

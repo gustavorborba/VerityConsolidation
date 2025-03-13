@@ -1,12 +1,15 @@
-﻿using ClosedXML.Excel;
+﻿using AutoMapper;
+using BalanceLedgerApi.Application.Dto;
+using ClosedXML.Excel;
+using ConsolidationApi.Application.Dto;
 using System.Collections.Concurrent;
 
 namespace ConsolidationApi.Application.Service
 {
     public class ConsolidationService(ITransactionRepository _transactionRepository, IConsolidationRepository _consolidationRepository, 
-        ILogger<ConsolidationService> _logger) : IConsolidationService
+        IMapper _mapper, ILogger<ConsolidationService> _logger) : IConsolidationService
     {
-        private const int PAGE_SIZE = 1000;
+        private const int PAGE_SIZE = 5;
         public async Task ConsolidationProcess(DateTime startDate, DateTime endDate)
         {
             try
@@ -26,7 +29,22 @@ namespace ConsolidationApi.Application.Service
             return GenerateExcelReport([.. data]);
         }
 
-        public async Task<IEnumerable<Consolidation>> GetAll() => await _consolidationRepository.All();
+        public async Task<CommonResponseDto<IEnumerable<ConsolidationDto>>> GetAll() 
+        {
+            try
+            {
+                var consolidations = _mapper.Map<IEnumerable<ConsolidationDto>>(await _consolidationRepository.All());
+
+                return CommonResponseDto<IEnumerable<ConsolidationDto>>.SuccessResponse(consolidations);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting consolidations");
+                return CommonResponseDto<IEnumerable<ConsolidationDto>>.ErrorResponse(ex.Message);
+                throw;
+            }
+                  
+        }
 
         private async Task Run(DateTime startDate, DateTime endDate)
         {

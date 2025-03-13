@@ -1,4 +1,6 @@
-﻿using ConsolidationApi.Application.Interface.Repository;
+﻿using AutoMapper;
+using ConsolidationApi.Application.Dto;
+using ConsolidationApi.Application.Interface.Repository;
 using ConsolidationApi.Application.Service;
 using ConsolidationApi.Domain.Enum;
 using ConsolidationApi.Domain.Model;
@@ -11,6 +13,7 @@ namespace ConsolidationApi.Test.Services
     {
         private readonly ITransactionRepository _transactionRepository;
         private readonly IConsolidationRepository _consolidationRepository;
+        private readonly IMapper _mapper;
         private readonly ILogger<ConsolidationService> _logger;
         private readonly ConsolidationService _consolidationService;
 
@@ -18,8 +21,10 @@ namespace ConsolidationApi.Test.Services
         {
             _transactionRepository = Substitute.For<ITransactionRepository>();
             _consolidationRepository = Substitute.For<IConsolidationRepository>();
+            _mapper = Substitute.For<IMapper>();
             _logger = Substitute.For<ILogger<ConsolidationService>>();
-            _consolidationService = new ConsolidationService(_transactionRepository, _consolidationRepository, _logger);
+            
+            _consolidationService = new ConsolidationService(_transactionRepository, _consolidationRepository, _mapper, _logger);
         }
 
         [Fact]
@@ -47,7 +52,7 @@ namespace ConsolidationApi.Test.Services
             var transactions = new List<Transaction>
             {
                 new() { Type = TransactionType.Debit, Value = 100 },
-                new() { Type = TransactionType.Credit, Value = 200 }
+                new Transaction { Type = TransactionType.Credit, Value = 200 }
             };
 
             _transactionRepository.GetCountByDateInterval(startDate, endDate).Returns(totalRecords);
@@ -96,21 +101,36 @@ namespace ConsolidationApi.Test.Services
         }
 
         [Fact]
-        public async Task GetAll_ShouldReturnAllConsolidations()
+        public async Task GetAll_ShouldReturnSuccessResponse_WhenConsolidationsExist()
         {
             // Arrange
-            var consolidations = new List<Consolidation>
-            {
-                new() { CreditTotal = 100, DebitTotal = 50, Total = 150, DateCreated = DateTime.UtcNow }
-            };
-            _consolidationRepository.All().Returns(consolidations);
+            var consolidations = new List<Consolidation> { new() { DebitTotal = 100, CreditTotal = 200, Total = 300, DateCreated = DateTime.UtcNow } };
+            var consolidationDtos = new List<ConsolidationDto> { new() { DebitTotal = 100, CreditTotal = 200, Total = 300, DateCreated = DateTime.UtcNow } };
+
+            _consolidationRepository.All().Returns(Task.FromResult((IEnumerable<Consolidation>)consolidations));
+            _mapper.Map<IEnumerable<ConsolidationDto>>(consolidations).Returns(consolidationDtos);
 
             // Act
             var result = await _consolidationService.GetAll();
 
             // Assert
-            Assert.NotNull(result);
-            Assert.Equal(consolidations, result);
+            Assert.True(result.Success);
+            Assert.Equal(consolidationDtos, result.Data);
+        }
+
+        [Fact]
+        public async Task GetAll_ShouldReturnErrorResponse_WhenExceptionIsThrown()
+        {
+            // Arrange
+            var exceptionMessage = "Error getting consolidations";
+            _consolidationRepository.All().Returns(Task.FromException<IEnumerable<Consolidation>>(new Exception(exceptionMessage)));
+
+            // Act
+            var result = await _consolidationService.GetAll();
+
+            // Assert
+            Assert.False(result.Success);
+            Assert.Equal(exceptionMessage, result.Error);
         }
     }
 }

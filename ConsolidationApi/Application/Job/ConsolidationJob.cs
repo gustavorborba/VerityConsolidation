@@ -9,7 +9,7 @@ namespace ConsolidationApi.Application.Job
             try
             {
                 _logger.LogInformation("Consolidation Job Started");              
-                await _service.ConsolidationProcess(DateTime.UtcNow.AddDays(-1), DateTime.UtcNow);
+                await _service.ConsolidationProcess(DateTime.UtcNow, DateTime.UtcNow);
                 _logger.LogInformation("Consolidation Job Finished");
             }
             catch (Exception ex)
