@@ -9,7 +9,7 @@ namespace ConsolidationApi.Application.Service
     public class ConsolidationService(ITransactionRepository _transactionRepository, IConsolidationRepository _consolidationRepository, 
         IMapper _mapper, ILogger<ConsolidationService> _logger) : IConsolidationService
     {
-        private const int PAGE_SIZE = 5;
+        private const int PAGE_SIZE = 1000;
         public async Task ConsolidationProcess(DateTime startDate, DateTime endDate)
         {
             try

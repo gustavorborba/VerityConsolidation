@@ -52,7 +52,7 @@ namespace ConsolidationApi.Test.Services
             var transactions = new List<Transaction>
             {
                 new() { Type = TransactionType.Debit, Value = 100 },
-                new Transaction { Type = TransactionType.Credit, Value = 200 }
+                new() { Type = TransactionType.Credit, Value = 200 }
             };
 
             _transactionRepository.GetCountByDateInterval(startDate, endDate).Returns(totalRecords);
