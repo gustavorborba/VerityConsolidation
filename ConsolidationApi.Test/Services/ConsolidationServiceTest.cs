@@ -26,8 +26,8 @@ namespace ConsolidationApi.Test.Services
         public async Task ConsolidationProcess_ShouldLogInformation_WhenNoRecordsToProcess()
         {
             // Arrange
-            var startDate = DateTime.Now.AddDays(-1);
-            var endDate = DateTime.Now;
+            var startDate = DateTime.UtcNow.AddDays(-1);
+            var endDate = DateTime.UtcNow;
             _transactionRepository.GetCountByDateInterval(startDate, endDate).Returns(0);
 
             // Act
@@ -41,33 +41,33 @@ namespace ConsolidationApi.Test.Services
         public async Task ConsolidationProcess_ShouldProcessChunks_WhenRecordsExist()
         {
             // Arrange
-            var startDate = DateTime.Now.AddDays(-1);
-            var endDate = DateTime.Now;
+            var startDate = new DateTime(2023, 1, 1);
+            var endDate = new DateTime(2023, 1, 31);
+            var totalRecords = 2500;
             var transactions = new List<Transaction>
             {
                 new() { Type = TransactionType.Debit, Value = 100 },
                 new() { Type = TransactionType.Credit, Value = 200 }
             };
-            _transactionRepository.GetCountByDateInterval(startDate, endDate).Returns(2);
-            _transactionRepository.GetPaginatedByDateInterval(startDate, endDate, 1, 1000).Returns(transactions);
+
+            _transactionRepository.GetCountByDateInterval(startDate, endDate).Returns(totalRecords);
+            _transactionRepository.GetPaginatedByDateInterval(startDate, endDate, Arg.Any<int>(), Arg.Any<int>()).Returns(transactions);
 
             // Act
             await _consolidationService.ConsolidationProcess(startDate, endDate);
 
             // Assert
-            _logger.Received().LogInformation("Consolidation Process Started with StartDate = {StartDate} and EndDate = {EndDate}", startDate, endDate);
-            _logger.Received().LogInformation("Total of Records to be processed: {TotalOfRecordsToBeProcessed}", 2);
-            _logger.Received().LogInformation("All Chunks Processed");
-            _logger.Received().LogInformation("Consolidation Process Finished");
-            await _consolidationRepository.Received().Save(Arg.Any<Consolidation>());
+            await _transactionRepository.Received(1).GetCountByDateInterval(startDate, endDate);
+            await _transactionRepository.ReceivedWithAnyArgs(3).GetPaginatedByDateInterval(startDate, endDate, default, default);
+            await _consolidationRepository.Received(1).Save(Arg.Any<Consolidation>());
         }
 
         [Fact]
         public async Task ConsolidationProcess_ShouldLogError_WhenExceptionThrown()
         {
             // Arrange
-            var startDate = DateTime.Now.AddDays(-1);
-            var endDate = DateTime.Now;
+            var startDate = DateTime.UtcNow.AddDays(-1);
+            var endDate = DateTime.UtcNow;
             _transactionRepository.GetCountByDateInterval(startDate, endDate).Returns(Task.FromException<long>(new Exception("Test Exception")));
 
             // Act
@@ -83,7 +83,7 @@ namespace ConsolidationApi.Test.Services
             var consolidationsNumber = 5;
             var consolidations = new List<Consolidation>
             {
-                new() { CreditTotal = 100, DebitTotal = 50, Total = 150, DateCreated = DateTime.Now }
+                new() { CreditTotal = 100, DebitTotal = 50, Total = 150, DateCreated = DateTime.UtcNow }
             };
             _consolidationRepository.GetLastConsolidations(consolidationsNumber).Returns(consolidations);
 
@@ -101,7 +101,7 @@ namespace ConsolidationApi.Test.Services
             // Arrange
             var consolidations = new List<Consolidation>
             {
-                new() { CreditTotal = 100, DebitTotal = 50, Total = 150, DateCreated = DateTime.Now }
+                new() { CreditTotal = 100, DebitTotal = 50, Total = 150, DateCreated = DateTime.UtcNow }
             };
             _consolidationRepository.All().Returns(consolidations);
 

@@ -1,6 +1,4 @@
-﻿using ConsolidationApi.Domain.Enum;
-
-namespace ConsolidationApi.Domain.Model
+﻿namespace ConsolidationApi.Domain.Model
 {
     public class Transaction : BaseMongo
     {

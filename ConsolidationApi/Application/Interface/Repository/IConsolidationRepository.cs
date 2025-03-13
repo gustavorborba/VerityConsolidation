@@ -1,6 +1,4 @@
-﻿using ConsolidationApi.Domain.Model;
-
-namespace ConsolidationApi.Application.Interface.Repository
+﻿namespace ConsolidationApi.Application.Interface.Repository
 {
     public interface IConsolidationRepository
     {

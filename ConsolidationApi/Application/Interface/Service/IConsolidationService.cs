@@ -1,6 +1,4 @@
-﻿using ConsolidationApi.Domain.Model;
-
-namespace ConsolidationApi.Application.Interface.Service
+﻿namespace ConsolidationApi.Application.Interface.Service
 {
     public interface IConsolidationService
     {

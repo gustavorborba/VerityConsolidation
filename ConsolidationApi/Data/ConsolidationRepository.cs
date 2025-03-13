@@ -1,6 +1,4 @@
-﻿using ConsolidationApi.Application.Interface.Repository;
-using ConsolidationApi.Domain.Model;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace ConsolidationApi.Data
 {

@@ -1,6 +1,4 @@
-﻿using ConsolidationApi.Application.Interface.Repository;
-using ConsolidationApi.Domain.Model;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 
 namespace ConsolidationApi.Data

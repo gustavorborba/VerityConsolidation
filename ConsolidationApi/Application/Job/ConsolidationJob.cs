@@ -1,5 +1,4 @@
-﻿using ConsolidationApi.Application.Interface.Service;
-using Quartz;
+﻿using Quartz;
 
 namespace ConsolidationApi.Application.Job
 {
@@ -10,7 +9,7 @@ namespace ConsolidationApi.Application.Job
             try
             {
                 _logger.LogInformation("Consolidation Job Started");              
-                await _service.ConsolidationProcess(DateTime.Now.AddDays(-1), DateTime.Now);
+                await _service.ConsolidationProcess(DateTime.UtcNow.AddDays(-1), DateTime.UtcNow);
                 _logger.LogInformation("Consolidation Job Finished");
             }
             catch (Exception ex)

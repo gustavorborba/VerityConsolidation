@@ -1,5 +1,4 @@
-﻿using ConsolidationApi.Domain.Model;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ConsolidationApi.Data.Configurations

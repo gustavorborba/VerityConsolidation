@@ -1,10 +1,3 @@
-using ConsolidationApi.Application.Interface.Repository;
-using ConsolidationApi.Application.Interface.Service;
-using ConsolidationApi.Application.Job;
-using ConsolidationApi.Application.Service;
-using ConsolidationApi.Data;
-using ConsolidationApi.Domain.Model;
-using ConsolidationApi.Endpoints;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -14,14 +7,13 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("Configuration"));
 
 var appSettings = builder.Configuration.GetSection("Configuration").Get<AppSettings>() ?? new AppSettings();
 
 ConfigureServices(builder, appSettings);
 
-ConfigureJob(builder);
+ConfigureJob(builder, appSettings.CronConfiguration);
 
 var app = builder.Build();
 
@@ -95,19 +87,18 @@ static void ConfigureApp(WebApplication app)
     app.UseHttpsRedirection();
 }
 
-static void ConfigureJob(WebApplicationBuilder builder)
+static void ConfigureJob(WebApplicationBuilder builder, string cronConfiguration)
 {
     builder.Services.AddQuartz(q =>
     {
         var job = new JobKey("ConsolidationJob");
 
-        q.AddJob<ConsolidationJob>(opt => opt.WithIdentity(job));
+        q.AddJob<ConsolidationJob>(opt => 
+        opt.WithIdentity(job).RequestRecovery());
         q.AddTrigger(opt => opt
             .ForJob(job)
             .WithIdentity("ConsolidationJobTrigger")
-            .WithCronSchedule("0/30 * * * * ?"));
-        //.WithCronSchedule("0 0 0 * * ?"));
-
+            .WithCronSchedule(cronConfiguration));
     });
 
     builder.Services.AddQuartzHostedService(options =>

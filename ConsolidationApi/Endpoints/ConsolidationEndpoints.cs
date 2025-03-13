@@ -1,6 +1,4 @@
-﻿using ConsolidationApi.Application.Interface.Service;
-
-namespace ConsolidationApi.Endpoints
+﻿namespace ConsolidationApi.Endpoints
 {
     public static class ConsolidationEndpoints
     {

@@ -1,8 +1,4 @@
 ﻿using ClosedXML.Excel;
-using ConsolidationApi.Application.Interface.Repository;
-using ConsolidationApi.Application.Interface.Service;
-using ConsolidationApi.Domain.Enum;
-using ConsolidationApi.Domain.Model;
 using System.Collections.Concurrent;
 
 namespace ConsolidationApi.Application.Service
@@ -57,7 +53,7 @@ namespace ConsolidationApi.Application.Service
 
             var finalConsolidation = new Consolidation()
             {
-                DateCreated = DateTime.Now,
+                DateCreated = DateTime.UtcNow,
                 DebitTotal = debitTotal,
                 CreditTotal = creditTotal,
                 Total = creditTotal + debitTotal
