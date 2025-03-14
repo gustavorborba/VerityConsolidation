@@ -11,7 +11,7 @@ namespace ConsolidationApi.Data
             return consolidation;
         }
 
-        public async Task<IEnumerable<Consolidation>> GetLastConsolidations(int consolidationsNumber) 
+        public async Task<IEnumerable<Consolidation>> GetLastConsolidations(int consolidationsNumber)
             => await _context.Consolidations.AsNoTracking()
             .OrderByDescending(c => c.DateCreated)
             .Take(consolidationsNumber).ToListAsync();

@@ -93,7 +93,7 @@ static void ConfigureJob(WebApplicationBuilder builder, string cronConfiguration
     {
         var job = new JobKey("ConsolidationJob");
 
-        q.AddJob<ConsolidationJob>(opt => 
+        q.AddJob<ConsolidationJob>(opt =>
         opt.WithIdentity(job).RequestRecovery());
         q.AddTrigger(opt => opt
             .ForJob(job)

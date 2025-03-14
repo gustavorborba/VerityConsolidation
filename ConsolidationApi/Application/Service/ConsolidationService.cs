@@ -6,7 +6,7 @@ using System.Collections.Concurrent;
 
 namespace ConsolidationApi.Application.Service
 {
-    public class ConsolidationService(ITransactionRepository _transactionRepository, IConsolidationRepository _consolidationRepository, 
+    public class ConsolidationService(ITransactionRepository _transactionRepository, IConsolidationRepository _consolidationRepository,
         IMapper _mapper, ILogger<ConsolidationService> _logger) : IConsolidationService
     {
         private const int PAGE_SIZE = 1000;
@@ -29,7 +29,7 @@ namespace ConsolidationApi.Application.Service
             return GenerateExcelReport([.. data]);
         }
 
-        public async Task<CommonResponseDto<IEnumerable<ConsolidationDto>>> GetAll() 
+        public async Task<CommonResponseDto<IEnumerable<ConsolidationDto>>> GetAll()
         {
             try
             {
@@ -43,7 +43,7 @@ namespace ConsolidationApi.Application.Service
                 return CommonResponseDto<IEnumerable<ConsolidationDto>>.ErrorResponse(ex.Message);
                 throw;
             }
-                  
+
         }
 
         private async Task Run(DateTime startDate, DateTime endDate)
@@ -105,7 +105,7 @@ namespace ConsolidationApi.Application.Service
                     finally
                     {
                         semaphore.Release();
-                    }          
+                    }
                 }));
             }
 
