@@ -1,5 +1,4 @@
-﻿using BalanceLedgerApi.Application.Dto;
-using ConsolidationApi.Application.Dto;
+﻿using ConsolidationApi.Application.Dto;
 
 namespace ConsolidationApi.Application.Interface.Service
 {

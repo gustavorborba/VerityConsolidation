@@ -1,4 +1,4 @@
-﻿namespace BalanceLedgerApi.Application.Dto
+﻿namespace ConsolidationApi.Application.Dto
 {
     public class CommonResponseDto<T>
     {

@@ -88,7 +88,7 @@ static void ConfigureApp(WebApplication app)
     if (app.Environment.IsDevelopment())
     {
         app.MapOpenApi();
-        app.UseSwaggerUI(opt => opt.SwaggerEndpoint("/openapi/v1.json", "Balance Ledger API"));
+        app.UseSwaggerUI(opt => opt.SwaggerEndpoint("/openapi/v1.json", "Consolidation API"));
     }
 
     app.UseHttpsRedirection();
